@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
 from ..controller import athlete_trainer_controller
 from ..domain.athlete_trainer import AthleteTrainer
+from ..domain.trainer_doctor import TrainerDoctor
 
 athlete_trainer_bp = Blueprint('athlete_trainer', __name__, url_prefix='/athlete-trainer')
 
@@ -62,3 +63,16 @@ def delete_relation(athlete_id: int, trainer_doctor_id: int) -> Response:
     """
     athlete_trainer_controller.delete(athlete_id, trainer_doctor_id)
     return make_response("Relation deleted", HTTPStatus.OK)
+
+
+@athlete_trainer_bp.route('/new_link', methods=['POST'])
+def add_athlete_trainer():
+    data = request.get_json()
+    athlete_name = data['athlete']
+    trainer_doctor_name = data['trainer_doctor']
+
+    try:
+        new_link = AthleteTrainer.add_athlete_trainer(athlete_name, trainer_doctor_name)
+        return make_response(jsonify(new_link.put_into_dto()), HTTPStatus.CREATED)
+    except ValueError as e:
+        return make_response(str(e), HTTPStatus.BAD_REQUEST)

@@ -41,3 +41,15 @@ def patch_supplement(supplement_id: int) -> Response:
 def delete_supplement(supplement_id: int) -> Response:
     supplement_controller.delete(supplement_id)
     return make_response("Supplement deleted", HTTPStatus.OK)
+
+@supplement_bp.route('/dynamic-tables', methods=['POST'])
+def create_dynamic_tables():
+    """
+    Викликає динамічне створення таблиць з назвами з `Supplement` + timestamp.
+    """
+    try:
+        Supplement.create_dynamic_tables_meal()
+        return make_response(jsonify({"message": "Dynamic tables created successfully"}), HTTPStatus.CREATED)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR)
+

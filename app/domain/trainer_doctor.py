@@ -33,3 +33,17 @@ class TrainerDoctor(db.Model):
             lastname=dto_dict.get('lastname'),
             contact_info=dto_dict.get('contact_info'),
         )
+
+    @staticmethod
+    def insert_dummy_data():
+        """
+        Insert 10 dummy rows into the TrainerDoctor table with names in the format Noname+№.
+        """
+        for i in range(1, 11):
+            dummy_trainer = TrainerDoctor(
+                firstname=f"Noname{i}",
+                lastname=f"Trainer{i}",
+                contact_info=f"contact{i}@example.com"
+            )
+            db.session.add(dummy_trainer)
+        db.session.commit()

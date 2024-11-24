@@ -1,6 +1,9 @@
 from __future__ import annotations
 from typing import Dict, Any
 from app import db
+from datetime import datetime
+from random import randint, choice
+from sqlalchemy.sql import text
 
 class Supplement(db.Model):
     __tablename__ = 'supplement'
@@ -37,3 +40,47 @@ class Supplement(db.Model):
             frequency=dto_dict.get('frequency'),
             schedule_supplements_id=dto_dict.get('schedule_supplements_id'),
         )
+
+    @staticmethod
+    def create_dynamic_tables_meal():
+        """
+        Створює 10 динамічних таблиць з назвами зі стовпця `name` таблиці `Supplement`,
+        додаючи штамп часу. Кількість стовпців (1-9) і їх типи визначаються випадково.
+        """
+        # Отримати всі записи зі стовпця `name`
+        supplement_names = db.session.query(Supplement.name).all()
+
+        # Лічильник створених таблиць
+        table_count = 0
+
+        for name_tuple in supplement_names:
+            if table_count >= 10:
+                break  # Зупинити, якщо вже створено 10 таблиць
+
+            supplement_name = name_tuple[0].replace(" ", "_")  # Замінити пробіли на "_"
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            table_name = f"{supplement_name}_{timestamp}"
+
+            # Випадковий вибір кількості стовпців (від 1 до 9)
+            num_columns = randint(1, 9)
+
+            # Генерація SQL для створення таблиці
+            columns_sql = []
+            for i in range(1, num_columns + 1):
+                col_name = f"col_{i}"
+                col_type = choice(["VARCHAR(255)", "INT", "DECIMAL(10,2)", "DATE"])
+                columns_sql.append(f"{col_name} {col_type}")
+
+            columns_sql_str = ", ".join(columns_sql)
+            create_table_sql = f"CREATE TABLE `{table_name}` (id INT AUTO_INCREMENT PRIMARY KEY, {columns_sql_str});"
+
+            # Виконати створення таблиці
+            db.session.execute(text(create_table_sql))
+            print(f"Created table: {table_name}")
+
+            # Збільшити лічильник створених таблиць
+            table_count += 1
+
+        db.session.commit()
+
+

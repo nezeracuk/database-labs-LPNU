@@ -9,6 +9,7 @@ from .schedule_supplements_service import ScheduleSupplementsService
 from .supplement_service import SupplementService
 from .meal_ingredients_service import MealIngredientsService
 from .athlete_trainer_service import AthleteTrainerService
+from .athlete_statistics_service import AthleteStatisticsService
 
 athlete_service = AthleteService()
 schedule_meal_service = ScheduleMealService()
@@ -21,6 +22,7 @@ schedule_supplements_service = ScheduleSupplementsService()
 supplement_service = SupplementService()
 meal_ingredients_service = MealIngredientsService()
 athlete_trainer_service = AthleteTrainerService()
+athlete_statistics_service = AthleteStatisticsService()
 
 __all__ = [
     'AthleteService',
