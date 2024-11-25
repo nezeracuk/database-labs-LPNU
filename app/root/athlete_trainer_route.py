@@ -3,6 +3,7 @@ from flask import Blueprint, jsonify, Response, request, make_response
 from ..controller import athlete_trainer_controller
 from ..domain.athlete_trainer import AthleteTrainer
 from ..domain.trainer_doctor import TrainerDoctor
+from ..domain.insert_record import insert_record
 
 athlete_trainer_bp = Blueprint('athlete_trainer', __name__, url_prefix='/athlete-trainer')
 
@@ -76,3 +77,8 @@ def add_athlete_trainer():
         return make_response(jsonify(new_link.put_into_dto()), HTTPStatus.CREATED)
     except ValueError as e:
         return make_response(str(e), HTTPStatus.BAD_REQUEST)
+
+
+@athlete_trainer_bp.route('/parametrized', methods=['POST'])
+def insert_athlete_trainer_record():
+    return insert_record(AthleteTrainer, request.get_json())

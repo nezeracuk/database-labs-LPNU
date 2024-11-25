@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import supplement_controller
 from ..domain.supplement import Supplement
+from ..domain.insert_record import insert_record
 
 supplement_bp = Blueprint('supplement', __name__, url_prefix='/supplement')
 
@@ -53,3 +54,6 @@ def create_dynamic_tables():
     except Exception as e:
         return make_response(jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR)
 
+@supplement_bp.route('/parametrized', methods=['POST'])
+def insert_supplement_record():
+    return insert_record(Supplement, request.get_json())

@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.controller.athlete_statistics_controller import AthleteStatisticsController
 from app.domain.athlete_statistics import AthleteStatistics
+from ..domain.insert_record import insert_record
 
 statistics_bp = Blueprint('statistics', __name__, url_prefix='/statistics')
 
@@ -57,3 +58,7 @@ def patch_statistics(statistics_id):
         return jsonify({'message': 'Statistics updated successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+@statistics_bp.route('/parametrized', methods=['POST'])
+def insert_athlete_statistics_record():
+    return insert_record(AthleteStatistics, request.get_json())
+

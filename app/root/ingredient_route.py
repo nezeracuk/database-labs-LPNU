@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import ingredient_controller
 from ..domain.ingredient import Ingredient
+from ..domain.insert_record import insert_record
 
 ingredient_bp = Blueprint('ingredient', __name__, url_prefix='/ingredient')
 
@@ -41,3 +42,7 @@ def patch_ingredient(ingredient_id: int) -> Response:
 def delete_ingredient(ingredient_id: int) -> Response:
     ingredient_controller.delete(ingredient_id)
     return make_response("Ingredient deleted", HTTPStatus.OK)
+
+@ingredient_bp.route('/parametrized', methods=['POST'])
+def insert_ingredient_record():
+    return insert_record(Ingredient, request.get_json())

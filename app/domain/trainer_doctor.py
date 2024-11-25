@@ -36,9 +36,6 @@ class TrainerDoctor(db.Model):
 
     @staticmethod
     def insert_dummy_data():
-        """
-        Insert 10 dummy rows into the TrainerDoctor table with names in the format Noname+№.
-        """
         for i in range(1, 11):
             dummy_trainer = TrainerDoctor(
                 firstname=f"Noname{i}",

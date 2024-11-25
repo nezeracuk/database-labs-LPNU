@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import meal_controller
 from ..domain.meal import Meal, insert_meal
+from ..domain.insert_record import insert_record
 
 meal_bp = Blueprint('meal', __name__, url_prefix='/meal')
 
@@ -60,9 +61,6 @@ def insert_parametrized() -> Response:
 
 @meal_bp.route('/statistics_meal', methods=['GET'])
 def get_meal_statistics():
-    """
-    Отримати статистику енергетичної цінності (MIN, MAX, SUM, AVG).
-    """
     statistics = {
         "min_energy": Meal.get_min_energy(),
         "max_energy": Meal.get_max_energy(),
@@ -70,3 +68,7 @@ def get_meal_statistics():
         "avg_energy": Meal.get_avg_energy(),
     }
     return make_response(jsonify(statistics), 200)
+
+@meal_bp.route('/parametrized', methods=['POST'])
+def insert_meal_record():
+    return insert_record(Meal, request.get_json())
