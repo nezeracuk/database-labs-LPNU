@@ -71,39 +71,6 @@ def populate_data():
         cursor.close()
         connection.close()
 
-        def execute_sql_scripts(file_names):
-            """
-            Виконує список SQL-скриптів, переданих у file_names.
-            """
-            connection = mysql.connector.connect(
-                host='127.0.0.1',
-                user='root',
-                password='27102005',
-                database='lab4'
-            )
-            cursor = connection.cursor()
-
-            for file_name in file_names:
-                file_path = os.path.abspath(file_name)
-                if os.path.exists(file_path):
-                    print(f"Виконання SQL-скрипту: {file_name}")
-                    with open(file_path, 'r') as sql_file:
-                        sql_text = sql_file.read()
-                        sql_statements = sql_text.split(';')
-                        for statement in sql_statements:
-                            statement = statement.strip()
-                            if statement:
-                                try:
-                                    cursor.execute(statement)
-                                    connection.commit()
-                                except mysql.connector.Error as error:
-                                    print(f"Помилка виконання SQL-інструкції: {error}")
-                                    print(f"SQL-інструкція: {statement}")
-                                    connection.rollback()
-
-            cursor.close()
-            connection.close()
-
 def execute_sql_scripts(file_names):
     """
     Виконує список SQL-скриптів, переданих у file_names.

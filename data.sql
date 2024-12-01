@@ -139,5 +139,3 @@ INSERT INTO `athlete_trainer` (`athlete_id`, `trainer_doctor_id`) VALUES
 (4, 3),
 (5, 4),
 (5, 5);
-
-
