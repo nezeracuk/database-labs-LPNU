@@ -14,6 +14,7 @@ def register_routes(app: Flask) -> None:
     from .supplement_route import supplement_bp
     from .meal_ingredients_route import meal_ingredients_bp
     from .athlete_trainer_route import athlete_trainer_bp
+    from .athlete_statistics_route import statistics_bp
 
     app.register_blueprint(athlete_bp)
     app.register_blueprint(schedule_meal_bp)
@@ -26,3 +27,4 @@ def register_routes(app: Flask) -> None:
     app.register_blueprint(supplement_bp)
     app.register_blueprint(meal_ingredients_bp)
     app.register_blueprint(athlete_trainer_bp)
+    app.register_blueprint(statistics_bp)

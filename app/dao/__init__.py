@@ -9,6 +9,7 @@ from .schedule_dao import ScheduleDAO
 from .supplement_dao import SupplementDAO
 from .meal_ingredients_dao import MealIngredientsDAO
 from .athlete_trainer_dao import AthleteTrainerDAO
+from .athlete_statistics_dao import AthleteStatisticsDAO
 
 athlete_dao = AthleteDAO()
 schedule_meal_dao = ScheduleMealDAO()
@@ -21,6 +22,7 @@ schedule_dao = ScheduleDAO()
 supplement_dao = SupplementDAO()
 meal_ingredients_dao = MealIngredientsDAO()
 athlete_trainer_dao = AthleteTrainerDAO()
+athlete_statistics_dao = AthleteStatisticsDAO()
 
 __all__ = [
     'athlete_dao',
@@ -33,5 +35,6 @@ __all__ = [
     'schedule_dao',
     'supplement_dao',
     'meal_ingredients_dao',
-    'athlete_trainer_dao'
+    'athlete_trainer_dao',
+    'athlete_statistics_dao'
 ]

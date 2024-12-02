@@ -9,6 +9,7 @@ from .schedule_supplements_controller import ScheduleSupplementsController
 from .supplement_controller import SupplementController
 from .meal_ingredients_controller import MealIngredientsController
 from .athlete_trainer_controller import AthleteTrainerController
+from .athlete_statistics_controller import AthleteStatisticsController
 
 athlete_controller = AthleteController()
 schedule_meal_controller = ScheduleMealController()
@@ -21,6 +22,7 @@ schedule_supplements_controller = ScheduleSupplementsController()
 supplement_controller = SupplementController()
 meal_ingredients_controller = MealIngredientsController()
 athlete_trainer_controller = AthleteTrainerController()
+athlete_statistics_controller = AthleteStatisticsController()
 
 __all__ = [
     'AthleteController',
@@ -33,5 +35,6 @@ __all__ = [
     'ScheduleSupplementsController',
     'SupplementController',
     'MealIngredientsController',
-    'athlete_trainer_controller'
+    'athlete_trainer_controller',
+    'athlete_statistics_controller'
 ]

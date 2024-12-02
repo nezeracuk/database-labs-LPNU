@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, Any
 from app import db
+from sqlalchemy.sql import func
 from sqlalchemy import Enum
 
 class Meal(db.Model):
@@ -40,3 +41,46 @@ class Meal(db.Model):
             meal_type=dto_dict.get('meal_type'),
             schedule_meal_id=dto_dict.get('schedule_meal_id'),
         )
+
+    @staticmethod
+    def get_min_energy() -> float:
+        """
+        Отримати мінімальне значення енергетичної цінності.
+        """
+        return db.session.query(func.min(Meal.energy_value)).scalar()
+
+    @staticmethod
+    def get_max_energy() -> float:
+        """
+        Отримати максимальне значення енергетичної цінності.
+        """
+        return db.session.query(func.max(Meal.energy_value)).scalar()
+
+    @staticmethod
+    def get_sum_energy() -> float:
+        """
+        Отримати сумарне значення енергетичної цінності.
+        """
+        return db.session.query(func.sum(Meal.energy_value)).scalar()
+
+    @staticmethod
+    def get_avg_energy() -> float:
+        """
+        Отримати середнє значення енергетичної цінності.
+        """
+        return db.session.query(func.avg(Meal.energy_value)).scalar()
+
+def insert_meal(name: str, description: str, energy_value: float, meal_type: str, schedule_meal_id: int) -> Meal:
+    new_meal = Meal(
+        name=name,
+        description=description,
+        energy_value=energy_value,
+        meal_type=meal_type,
+        schedule_meal_id=schedule_meal_id
+    )
+    db.session.add(new_meal)
+    db.session.commit()
+    return new_meal
+
+
+

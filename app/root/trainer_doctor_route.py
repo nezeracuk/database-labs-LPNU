@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import trainer_doctor_controller
 from ..domain.trainer_doctor import TrainerDoctor
+from ..domain.insert_record import insert_record
 
 trainer_doctor_bp = Blueprint('trainer_doctor', __name__, url_prefix='/trainer_doctor')
 
@@ -41,3 +42,16 @@ def patch_trainer_doctor(trainer_doctor_id: int) -> Response:
 def delete_trainer_doctor(trainer_doctor_id: int) -> Response:
     trainer_doctor_controller.delete(trainer_doctor_id)
     return make_response("Trainer/Doctor deleted", HTTPStatus.OK)
+
+@trainer_doctor_bp.route('/insert_dummy_data', methods=['POST'])
+def insert_dummy_trainers():
+    try:
+        TrainerDoctor.insert_dummy_data()
+        return make_response(jsonify({"message": "10 dummy trainers inserted successfully"}), HTTPStatus.CREATED)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+
+@trainer_doctor_bp.route('/parametrized', methods=['POST'])
+def insert_trainer_doctor_record():
+    return insert_record(TrainerDoctor, request.get_json())

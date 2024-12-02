@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import supplement_controller
 from ..domain.supplement import Supplement
+from ..domain.insert_record import insert_record
 
 supplement_bp = Blueprint('supplement', __name__, url_prefix='/supplement')
 
@@ -41,3 +42,18 @@ def patch_supplement(supplement_id: int) -> Response:
 def delete_supplement(supplement_id: int) -> Response:
     supplement_controller.delete(supplement_id)
     return make_response("Supplement deleted", HTTPStatus.OK)
+
+@supplement_bp.route('/dynamic-tables', methods=['POST'])
+def create_dynamic_tables():
+    """
+    Викликає динамічне створення таблиць з назвами з `Supplement` + timestamp.
+    """
+    try:
+        Supplement.create_dynamic_tables_meal()
+        return make_response(jsonify({"message": "Dynamic tables created successfully"}), HTTPStatus.CREATED)
+    except Exception as e:
+        return make_response(jsonify({"error": str(e)}), HTTPStatus.INTERNAL_SERVER_ERROR)
+
+@supplement_bp.route('/parametrized', methods=['POST'])
+def insert_supplement_record():
+    return insert_record(Supplement, request.get_json())
