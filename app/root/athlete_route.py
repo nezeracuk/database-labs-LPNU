@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response
 from ..controller import athlete_controller, competition_controller
 from ..domain.athlete import Athlete
+from ..domain.insert_record import insert_record
 
 athlete_bp = Blueprint('athlete', __name__, url_prefix='/athlete')
 
@@ -40,3 +41,7 @@ def patch_athlete(athlete_id: int) -> Response:
 def delete_athlete(athlete_id: int) -> Response:
     athlete_controller.delete(athlete_id)
     return make_response("Athlete deleted", HTTPStatus.OK)
+
+@athlete_bp.route('/parametrized', methods=['POST'])
+def insert_athlete_record():
+    return insert_record(Athlete, request.get_json())

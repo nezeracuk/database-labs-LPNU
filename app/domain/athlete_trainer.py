@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import Dict, Any
 from app import db
+from .athlete import Athlete
+from .trainer_doctor import TrainerDoctor
 
 
 class AthleteTrainer(db.Model):
@@ -30,3 +32,20 @@ class AthleteTrainer(db.Model):
             athlete_id=dto_dict.get('athlete_id'),
             trainer_doctor_id=dto_dict.get('trainer_doctor_id')
         )
+
+    @staticmethod
+    def add_athlete_trainer(athlete_name: str, trainer_doctor_name: int) -> AthleteTrainer:
+        athlete = Athlete.query.filter_by(firstname=athlete_name).first()
+        if not athlete:
+            raise ValueError("Athlete not found")
+
+        trainer_doctor = TrainerDoctor.query.filter_by(firstname=trainer_doctor_name).first()
+        if not trainer_doctor:
+            raise ValueError("Trainer_doctor not found")
+
+        athlete_trainer_doctor = AthleteTrainer(athlete_id=athlete.id, trainer_doctor_id=trainer_doctor.id)
+        db.session.add(athlete_trainer_doctor)
+        db.session.commit()
+        return athlete_trainer_doctor
+
+

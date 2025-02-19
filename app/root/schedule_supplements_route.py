@@ -2,6 +2,7 @@ from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import schedule_supplements_controller
 from ..domain.schedule_supplements import ScheduleSupplements
+from ..domain.insert_record import insert_record
 
 schedule_supplements_bp = Blueprint('schedule_supplements', __name__, url_prefix='/schedule_supplements')
 
@@ -41,3 +42,7 @@ def patch_schedule_supplement(schedule_supplements_id: int) -> Response:
 def delete_schedule_supplement(schedule_supplements_id: int) -> Response:
     schedule_supplements_controller.delete(schedule_supplements_id)
     return make_response("Schedule Supplements deleted", HTTPStatus.OK)
+
+@schedule_supplements_bp.route('/parametrized', methods=['POST'])
+def insert_schedule_supplements_record():
+    return insert_record(ScheduleSupplements, request.get_json())

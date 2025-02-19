@@ -1,6 +1,9 @@
 from __future__ import annotations
 from typing import Dict, Any
 from app import db
+from datetime import datetime
+from random import randint, choice
+from sqlalchemy.sql import text
 
 class Supplement(db.Model):
     __tablename__ = 'supplement'
@@ -37,3 +40,37 @@ class Supplement(db.Model):
             frequency=dto_dict.get('frequency'),
             schedule_supplements_id=dto_dict.get('schedule_supplements_id'),
         )
+
+    @staticmethod
+    def create_dynamic_tables_meal():
+        supplement_names = db.session.query(Supplement.name).all()
+
+        table_count = 0
+
+        for name_tuple in supplement_names:
+            if table_count >= 10:
+                break
+
+            supplement_name = name_tuple[0].replace(" ", "_")
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            table_name = f"{supplement_name}_{timestamp}"
+
+            num_columns = randint(1, 9)
+
+            columns_sql = []
+            for i in range(1, num_columns + 1):
+                col_name = f"col_{i}"
+                col_type = choice(["VARCHAR(255)", "INT", "DECIMAL(10,2)", "DATE"])
+                columns_sql.append(f"{col_name} {col_type}")
+
+            columns_sql_str = ", ".join(columns_sql)
+            create_table_sql = f"CREATE TABLE `{table_name}` (id INT AUTO_INCREMENT PRIMARY KEY, {columns_sql_str});"
+
+            db.session.execute(text(create_table_sql))
+            print(f"Created table: {table_name}")
+
+            table_count += 1
+
+        db.session.commit()
+
+

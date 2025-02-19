@@ -1,7 +1,8 @@
 from http import HTTPStatus
 from flask import Blueprint, jsonify, Response, request, make_response, abort
 from ..controller import meal_controller
-from ..domain.meal import Meal
+from ..domain.meal import Meal, insert_meal
+from ..domain.insert_record import insert_record
 
 meal_bp = Blueprint('meal', __name__, url_prefix='/meal')
 
@@ -45,3 +46,29 @@ def patch_meal(meal_id: int) -> Response:
 def delete_meal(meal_id: int) -> Response:
     meal_controller.delete(meal_id)
     return make_response("Meal deleted", HTTPStatus.OK)
+
+@meal_bp.route('/parametrized', methods=['POST'])
+def insert_parametrized() -> Response:
+    content = request.get_json()
+    new_meal = insert_meal(
+        name= content['name'],
+        description=content['description'],
+        energy_value=content['energy_value'],
+        meal_type=content['meal_type'],
+        schedule_meal_id=content['schedule_meal_id']
+    )
+    return make_response(jsonify(new_meal.put_into_dto()), HTTPStatus.CREATED)
+
+@meal_bp.route('/statistics_meal', methods=['GET'])
+def get_meal_statistics():
+    statistics = {
+        "min_energy": Meal.get_min_energy(),
+        "max_energy": Meal.get_max_energy(),
+        "sum_energy": Meal.get_sum_energy(),
+        "avg_energy": Meal.get_avg_energy(),
+    }
+    return make_response(jsonify(statistics), 200)
+
+@meal_bp.route('/parametrized', methods=['POST'])
+def insert_meal_record():
+    return insert_record(Meal, request.get_json())

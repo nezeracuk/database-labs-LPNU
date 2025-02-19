@@ -9,6 +9,7 @@ from .schedule_supplements import ScheduleSupplements
 from .supplement import Supplement
 from .meal_ingredients import MealIngredients
 from .athlete_trainer import AthleteTrainer
+from .athlete_statistics import AthleteStatistics
 
 __all__ = [
     'Athlete',
@@ -21,5 +22,6 @@ __all__ = [
     'ScheduleSupplements',
     'Supplement',
     'MealIngredients',
-    'AthleteTrainer'
+    'AthleteTrainer',
+    'AthleteStatistics'
 ]
