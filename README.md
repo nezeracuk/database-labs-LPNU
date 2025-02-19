@@ -11,7 +11,7 @@ A Flask-based web application for managing athletes, their training schedules, m
 - [API Documentation](#api-documentation)
 - [Database Schema](#database-schema)
 - [Core Features](#core-features)
-- [License](#license)
+- [Business Logic](#business-logic)
 
 ## Features
 - 🏃‍♂️ **Athlete Management**
