@@ -269,4 +269,4 @@ Your Name - [GitHub Profile](https://github.com/YOUR_USERNAME)
 
 - Course: "Бази даних і знань" (Databases and Knowledge)
 - Lviv Polytechnic National University
-- AWS for cloud infrastructure 
+- AWS for cloud infrastructure
