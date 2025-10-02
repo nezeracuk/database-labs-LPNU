@@ -23,16 +23,33 @@ jobs:
         port: 22
         script: |
           cd ~/athlete-training-management-system
-          git pull origin main
-          source venv/bin/activate
-          pip install -r app/requirements.txt
           
-          # Перезапуск сервісу якщо налаштовано
-          if systemctl is-active --quiet athlete-api; then
-            sudo systemctl restart athlete-api
-            echo "✅ Service restarted"
+          # Pull latest code
+          git pull origin main
+          
+          # Stop and remove old container
+          sudo docker stop athlete-api || true
+          sudo docker rm athlete-api || true
+          
+          # Build new Docker image
+          sudo docker build -t nezerapp:latest .
+          
+          # Start new container
+          sudo docker run -d \
+            --name athlete-api \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
+            -e DB_NAME=${{ secrets.DB_NAME }} \
+            -p 5000:5000 \
+            nezerapp:latest
+          
+          # Check if container is running
+          if sudo docker ps | grep athlete-api; then
+            echo "✅ Container deployed successfully"
           else
-            echo "⚠️ Service not configured with systemd"
+            echo "❌ Container failed to start"
+            exit 1
           fi
           
           echo "🚀 Deployment completed at $(date)"
