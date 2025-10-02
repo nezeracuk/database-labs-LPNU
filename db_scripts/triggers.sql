@@ -1,4 +1,4 @@
-USE lab4;
+USE skibytskyi2;
 
 DROP TRIGGER IF EXISTS prevent_deletion;
 DROP TRIGGER IF EXISTS validate_average_score;

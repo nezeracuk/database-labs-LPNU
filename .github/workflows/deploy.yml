@@ -1,0 +1,47 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:  # Дозволяє ручний запуск
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Deploy to EC2 via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          cd ~/athlete-training-management-system
+          git pull origin main
+          source venv/bin/activate
+          pip install -r app/requirements.txt
+          
+          # Перезапуск сервісу якщо налаштовано
+          if systemctl is-active --quiet athlete-api; then
+            sudo systemctl restart athlete-api
+            echo "✅ Service restarted"
+          else
+            echo "⚠️ Service not configured with systemd"
+          fi
+          
+          echo "🚀 Deployment completed at $(date)"
+    
+    - name: Notify on success
+      if: success()
+      run: echo "✅ Deployment successful!"
+    
+    - name: Notify on failure
+      if: failure()
+      run: echo "❌ Deployment failed!"
+

@@ -1,6 +1,7 @@
 import mysql.connector
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flasgger import Swagger
 from app.config import Config
 from app.root import register_routes
 import os
@@ -13,17 +14,42 @@ print(sys.path)
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    # Налаштування Swagger UI
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": 'apispec',
+                "route": '/apispec.json',
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+        "static_url_path": "/flasgger_static",
+        "swagger_ui": True,
+        "specs_route": "/api/docs"
+    }
+    
+    swagger_template = {
+        "info": {
+            "title": "Athlete Training Management System API",
+            "description": "REST API для системи управління тренуванням спортсменів",
+            "version": "1.0.0",
+            "contact": {
+                "name": "API Support",
+                "url": "https://github.com/yourusername/athlete-training-management-system",
+            }
+        },
+        "host": "",  # Буде автоматично визначено
+        "basePath": "/",
+        "schemes": ["http", "https"],
+    }
+    
+    Swagger(app, config=swagger_config, template=swagger_template)
+    
     db.init_app(app)
-
     register_routes(app)
-
-    with app.app_context():
-        create_database()
-        create_tables(app)
-        execute_triggers()  # Додай цей рядок
-        print("Тригери створені.")
-        populate_data()
-
     return app
 
 
@@ -35,7 +61,7 @@ def create_database():
         password='27102005',
     )
     cursor = connection.cursor()
-    cursor.execute("CREATE DATABASE IF NOT EXISTS lab4")
+    cursor.execute("CREATE DATABASE IF NOT EXISTS skibytskyi2")
     cursor.close()
     connection.close()
 
@@ -52,7 +78,7 @@ def populate_data():
             host='127.0.0.1',
             user='root',
             password='27102005',
-            database='lab4'
+            database='skibytskyi2'
         )
         cursor = connection.cursor()
         with open(sql_file_path, 'r') as sql_file:
@@ -79,7 +105,7 @@ def execute_sql_scripts(file_names):
         host='127.0.0.1',
         user='root',
         password='27102005',
-        database='lab4'
+        database='skibytskyi2'
     )
     cursor = connection.cursor()
 
@@ -111,7 +137,7 @@ def execute_triggers():
             host='127.0.0.1',
             user='root',
             password='27102005',
-            database='lab4'
+            database='skibytskyi2'
         )
         cursor = connection.cursor()
         with open(sql_file_path, 'r') as sql_file:

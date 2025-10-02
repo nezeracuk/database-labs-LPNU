@@ -3,6 +3,7 @@ from .error_handler import err_handler_bp
 
 def register_routes(app: Flask) -> None:
     app.register_blueprint(err_handler_bp)
+    from .api_info_route import api_info_bp
     from .athlete_route import athlete_bp
     from .schedule_meal_route import schedule_meal_bp
     from .meal_route import meal_bp
@@ -16,6 +17,7 @@ def register_routes(app: Flask) -> None:
     from .athlete_trainer_route import athlete_trainer_bp
     from .athlete_statistics_route import statistics_bp
 
+    app.register_blueprint(api_info_bp)
     app.register_blueprint(athlete_bp)
     app.register_blueprint(schedule_meal_bp)
     app.register_blueprint(meal_bp)
