@@ -8,11 +8,45 @@ supplement_bp = Blueprint('supplement', __name__, url_prefix='/supplement')
 
 @supplement_bp.route('', methods=['GET'])
 def get_all_supplements() -> Response:
+    """
+    Get all supplements
+    ---
+    tags:
+      - Supplements
+    responses:
+      200:
+        description: List of all supplements
+    """
     supplements = supplement_controller.find_all()
     return make_response(jsonify(supplements), HTTPStatus.OK)
 
 @supplement_bp.route('', methods=['POST'])
 def create_supplement() -> Response:
+    """
+    Create a new supplement
+    ---
+    tags:
+      - Supplements
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            dosage:
+              type: string
+            Frequency:
+              type: string
+            schedule_supplements_id:
+              type: integer
+    responses:
+      201:
+        description: Supplement created successfully
+    """
     content = request.get_json()
     supplement = Supplement.create_from_dto(content)
     supplement_controller.create(supplement)

@@ -8,11 +8,34 @@ schedule_supplements_bp = Blueprint('schedule_supplements', __name__, url_prefix
 
 @schedule_supplements_bp.route('', methods=['GET'])
 def get_all_schedule_supplements() -> Response:
+    """
+    Get all schedule supplements
+    ---
+    tags:
+      - Schedule Supplements
+    responses:
+      200:
+        description: List of all schedule supplements
+    """
     schedule_supplements = schedule_supplements_controller.find_all()
     return make_response(jsonify(schedule_supplements), HTTPStatus.OK)
 
 @schedule_supplements_bp.route('', methods=['POST'])
 def create_schedule_supplement() -> Response:
+    """
+    Create a new schedule supplement
+    ---
+    tags:
+      - Schedule Supplements
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+    responses:
+      201:
+        description: Schedule supplement created successfully
+    """
     content = request.get_json()
     schedule_supplement = ScheduleSupplements.create_from_dto(content)
     schedule_supplements_controller.create(schedule_supplement)

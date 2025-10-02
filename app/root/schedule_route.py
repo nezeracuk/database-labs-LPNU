@@ -8,11 +8,49 @@ schedule_bp = Blueprint('schedule', __name__, url_prefix='/schedule')
 
 @schedule_bp.route('', methods=['GET'])
 def get_all_schedules() -> Response:
+    """
+    Get all schedules
+    ---
+    tags:
+      - Schedules
+    responses:
+      200:
+        description: List of all schedules
+    """
     schedules = schedule_controller.find_all()
     return make_response(jsonify(schedules), HTTPStatus.OK)
 
 @schedule_bp.route('', methods=['POST'])
 def create_schedule() -> Response:
+    """
+    Create a new schedule
+    ---
+    tags:
+      - Schedules
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            start_date:
+              type: string
+            end_date:
+              type: string
+            frequency:
+              type: string
+            athlete_id:
+              type: integer
+            trainer_doctor_id:
+              type: integer
+            schedule_meal_id:
+              type: integer
+            schedule_supplements_id:
+              type: integer
+    responses:
+      201:
+        description: Schedule created successfully
+    """
     content = request.get_json()
     schedule = Schedule.create_from_dto(content)
     schedule_controller.create(schedule)

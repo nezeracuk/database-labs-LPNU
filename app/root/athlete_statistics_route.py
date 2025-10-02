@@ -8,6 +8,15 @@ statistics_bp = Blueprint('statistics', __name__, url_prefix='/statistics')
 # Отримати всі записи
 @statistics_bp.route('', methods=['GET'])
 def get_all_statistics():
+    """
+    Get all athlete statistics
+    ---
+    tags:
+      - Statistics
+    responses:
+      200:
+        description: List of all athlete statistics
+    """
     return jsonify(AthleteStatisticsController().find_all())
 
 # Отримати конкретний запис
@@ -18,6 +27,34 @@ def get_statistics(statistics_id):
 # Створити новий запис
 @statistics_bp.route('', methods=['POST'])
 def create_statistics():
+    """
+    Create athlete statistics
+    ---
+    tags:
+      - Statistics
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - athlete_id
+            - total_competitions
+            - best_score
+            - average_score
+          properties:
+            athlete_id:
+              type: integer
+            total_competitions:
+              type: integer
+            best_score:
+              type: number
+            average_score:
+              type: number
+    responses:
+      201:
+        description: Statistics created successfully
+    """
     data = request.json
     if not data:
         return jsonify({'error': 'Invalid data'}), 400
@@ -40,6 +77,20 @@ def update_statistics(statistics_id):
 # Видалити запис
 @statistics_bp.route('/<int:statistics_id>', methods=['DELETE'])
 def delete_statistics(statistics_id):
+    """
+    Delete athlete statistics
+    ---
+    tags:
+      - Statistics
+    parameters:
+      - name: statistics_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Statistics deleted successfully
+    """
     try:
         AthleteStatisticsController().delete(statistics_id)
         return jsonify({'message': 'Deleted successfully'})

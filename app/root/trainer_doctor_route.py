@@ -8,11 +8,62 @@ trainer_doctor_bp = Blueprint('trainer_doctor', __name__, url_prefix='/trainer_d
 
 @trainer_doctor_bp.route('', methods=['GET'])
 def get_all_trainers_doctors() -> Response:
+    """
+    Отримати всіх тренерів/лікарів
+    ---
+    tags:
+      - Trainer/Doctor
+    responses:
+      200:
+        description: Список всіх тренерів/лікарів
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                example: 1
+              firstname:
+                type: string
+                example: "Олександр"
+              lastname:
+                type: string
+                example: "Мельник"
+              contact_info:
+                type: string
+                example: "+380501234567"
+    """
     trainers_doctors = trainer_doctor_controller.find_all()
     return make_response(jsonify(trainers_doctors), HTTPStatus.OK)
 
 @trainer_doctor_bp.route('', methods=['POST'])
 def create_trainer_doctor() -> Response:
+    """
+    Create a new trainer/doctor
+    ---
+    tags:
+      - Trainer/Doctor
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - firstname
+            - lastname
+            - contact_info
+          properties:
+            firstname:
+              type: string
+            lastname:
+              type: string
+            contact_info:
+              type: string
+    responses:
+      201:
+        description: Trainer/Doctor created successfully
+    """
     content = request.get_json()
     trainer_doctor = TrainerDoctor.create_from_dto(content)
     trainer_doctor_controller.create(trainer_doctor)
@@ -40,6 +91,20 @@ def patch_trainer_doctor(trainer_doctor_id: int) -> Response:
 
 @trainer_doctor_bp.route('/<int:trainer_doctor_id>', methods=['DELETE'])
 def delete_trainer_doctor(trainer_doctor_id: int) -> Response:
+    """
+    Delete trainer/doctor
+    ---
+    tags:
+      - Trainer/Doctor
+    parameters:
+      - name: trainer_doctor_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Trainer/Doctor deleted successfully
+    """
     trainer_doctor_controller.delete(trainer_doctor_id)
     return make_response("Trainer/Doctor deleted", HTTPStatus.OK)
 

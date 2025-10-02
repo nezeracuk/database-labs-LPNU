@@ -8,11 +8,43 @@ ingredient_bp = Blueprint('ingredient', __name__, url_prefix='/ingredient')
 
 @ingredient_bp.route('', methods=['GET'])
 def get_all_ingredients() -> Response:
+    """
+    Get all ingredients
+    ---
+    tags:
+      - Ingredients
+    responses:
+      200:
+        description: List of all ingredients
+    """
     ingredients = ingredient_controller.find_all()
     return make_response(jsonify(ingredients), HTTPStatus.OK)
 
 @ingredient_bp.route('', methods=['POST'])
 def create_ingredient() -> Response:
+    """
+    Create a new ingredient
+    ---
+    tags:
+      - Ingredients
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            quantity:
+              type: string
+            unit:
+              type: string
+    responses:
+      201:
+        description: Ingredient created successfully
+    """
     content = request.get_json()
     ingredient = Ingredient.create_from_dto(content)
     ingredient_controller.create(ingredient)
@@ -40,6 +72,20 @@ def patch_ingredient(ingredient_id: int) -> Response:
 
 @ingredient_bp.route('/<int:ingredient_id>', methods=['DELETE'])
 def delete_ingredient(ingredient_id: int) -> Response:
+    """
+    Delete ingredient
+    ---
+    tags:
+      - Ingredients
+    parameters:
+      - name: ingredient_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Ingredient deleted successfully
+    """
     ingredient_controller.delete(ingredient_id)
     return make_response("Ingredient deleted", HTTPStatus.OK)
 

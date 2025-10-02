@@ -8,11 +8,34 @@ schedule_meal_bp = Blueprint('schedule_meal', __name__, url_prefix='/schedule_me
 
 @schedule_meal_bp.route('', methods=['GET'])
 def get_all_schedule_meals() -> Response:
+    """
+    Get all schedule meals
+    ---
+    tags:
+      - Schedule Meals
+    responses:
+      200:
+        description: List of all schedule meals
+    """
     schedule_meals = schedule_meal_controller.find_all()
     return make_response(jsonify(schedule_meals), HTTPStatus.OK)
 
 @schedule_meal_bp.route('', methods=['POST'])
 def create_schedule_meal() -> Response:
+    """
+    Create a new schedule meal
+    ---
+    tags:
+      - Schedule Meals
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+    responses:
+      201:
+        description: Schedule meal created successfully
+    """
     content = request.get_json()
     schedule_meal = ScheduleMeal.create_from_dto(content)
     schedule_meal_controller.create(schedule_meal)

@@ -8,6 +8,15 @@ competition_bp = Blueprint('competition', __name__, url_prefix='/competition')
 
 @competition_bp.route('', methods=['GET'])
 def get_all_competitions() -> Response:
+    """
+    Get all competitions
+    ---
+    tags:
+      - Competitions
+    responses:
+      200:
+        description: List of all competitions
+    """
     competitions = competition_controller.find_all()
     competition_dtos = [
         competition if hasattr(competition, 'put_into_dto') else competition
@@ -17,6 +26,35 @@ def get_all_competitions() -> Response:
 
 @competition_bp.route('', methods=['POST'])
 def create_competition() -> Response:
+    """
+    Create a new competition
+    ---
+    tags:
+      - Competitions
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          required:
+            - name
+            - date
+            - Location
+            - athlete_id
+          properties:
+            name:
+              type: string
+            date:
+              type: string
+              format: date
+            Location:
+              type: string
+            athlete_id:
+              type: integer
+    responses:
+      201:
+        description: Competition created successfully
+    """
     content = request.get_json()
     competition = Competition.create_from_dto(content)
     competition_controller.create(competition)
@@ -44,6 +82,20 @@ def patch_competition(competition_id: int) -> Response:
 
 @competition_bp.route('/<int:competition_id>', methods=['DELETE'])
 def delete_competition(competition_id: int) -> Response:
+    """
+    Delete competition
+    ---
+    tags:
+      - Competitions
+    parameters:
+      - name: competition_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Competition deleted successfully
+    """
     competition_controller.delete(competition_id)
     return make_response("Competition deleted", HTTPStatus.OK)
 

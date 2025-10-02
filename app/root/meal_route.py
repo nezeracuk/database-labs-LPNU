@@ -8,6 +8,15 @@ meal_bp = Blueprint('meal', __name__, url_prefix='/meal')
 
 @meal_bp.route('', methods=['GET'])
 def get_all_meals() -> Response:
+    """
+    Get all meals
+    ---
+    tags:
+      - Meals
+    responses:
+      200:
+        description: List of all meals
+    """
     meals = meal_controller.find_all()
     meal_dtos = [
         meal if hasattr(meal, 'put_into_dto') else meal
@@ -17,6 +26,32 @@ def get_all_meals() -> Response:
 
 @meal_bp.route('', methods=['POST'])
 def create_meal() -> Response:
+    """
+    Create a new meal
+    ---
+    tags:
+      - Meals
+    parameters:
+      - in: body
+        name: body
+        schema:
+          type: object
+          properties:
+            name:
+              type: string
+            description:
+              type: string
+            energy_value:
+              type: number
+            meal_type:
+              type: string
+              enum: [Breakfast, Lunch, Dinner]
+            schedule_meal_id:
+              type: integer
+    responses:
+      201:
+        description: Meal created successfully
+    """
     content = request.get_json()
     meal = Meal.create_from_dto(content)
     meal_controller.create(meal)
@@ -44,6 +79,20 @@ def patch_meal(meal_id: int) -> Response:
 
 @meal_bp.route('/<int:meal_id>', methods=['DELETE'])
 def delete_meal(meal_id: int) -> Response:
+    """
+    Delete meal
+    ---
+    tags:
+      - Meals
+    parameters:
+      - name: meal_id
+        in: path
+        type: integer
+        required: true
+    responses:
+      200:
+        description: Meal deleted successfully
+    """
     meal_controller.delete(meal_id)
     return make_response("Meal deleted", HTTPStatus.OK)
 
