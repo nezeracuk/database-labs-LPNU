@@ -1,3 +1,14 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 class Config:
-   SQLALCHEMY_DATABASE_URI = "mysql+pymysql://admin:27102005@db-athlete.cl6g424k24bn.eu-north-1.rds.amazonaws.com/skibytskyi2"
-   SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Використовуємо змінні середовища (безпечно)
+    DB_USER = os.getenv('DB_USER', 'root')
+    DB_PASSWORD = os.getenv('DB_PASSWORD', 'your-password')
+    DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
+    DB_NAME = os.getenv('DB_NAME', 'skibytskyi2')
+    
+    SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+    SQLALCHEMY_TRACK_MODIFICATIONS = False

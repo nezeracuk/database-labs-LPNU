@@ -1,7 +1,12 @@
 import mysql.connector
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flasgger import Swagger
+try:
+    from flasgger import Swagger
+    HAS_SWAGGER = True
+except ImportError:
+    HAS_SWAGGER = False
+    print("Warning: flasgger not installed. Swagger UI will not be available.")
 from app.config import Config
 from app.root import register_routes
 import os
@@ -15,38 +20,39 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     
-    # Налаштування Swagger UI
-    swagger_config = {
-        "headers": [],
-        "specs": [
-            {
-                "endpoint": 'apispec',
-                "route": '/apispec.json',
-                "rule_filter": lambda rule: True,
-                "model_filter": lambda tag: True,
-            }
-        ],
-        "static_url_path": "/flasgger_static",
-        "swagger_ui": True,
-        "specs_route": "/api/docs"
-    }
-    
-    swagger_template = {
-        "info": {
-            "title": "Athlete Training Management System API",
-            "description": "REST API для системи управління тренуванням спортсменів",
-            "version": "1.0.0",
-            "contact": {
-                "name": "API Support",
-                "url": "https://github.com/yourusername/athlete-training-management-system",
-            }
-        },
-        "host": "",  # Буде автоматично визначено
-        "basePath": "/",
-        "schemes": ["http", "https"],
-    }
-    
-    Swagger(app, config=swagger_config, template=swagger_template)
+    # Налаштування Swagger UI (якщо доступний)
+    if HAS_SWAGGER:
+        swagger_config = {
+            "headers": [],
+            "specs": [
+                {
+                    "endpoint": 'apispec',
+                    "route": '/apispec.json',
+                    "rule_filter": lambda rule: True,
+                    "model_filter": lambda tag: True,
+                }
+            ],
+            "static_url_path": "/flasgger_static",
+            "swagger_ui": True,
+            "specs_route": "/api/docs"
+        }
+        
+        swagger_template = {
+            "info": {
+                "title": "Athlete Training Management System API",
+                "description": "REST API для системи управління тренуванням спортсменів",
+                "version": "1.0.0",
+                "contact": {
+                    "name": "API Support",
+                    "url": "https://github.com/yourusername/athlete-training-management-system",
+                }
+            },
+            "host": "",  # Буде автоматично визначено
+            "basePath": "/",
+            "schemes": ["http", "https"],
+        }
+        
+        Swagger(app, config=swagger_config, template=swagger_template)
     
     db.init_app(app)
     register_routes(app)
@@ -55,13 +61,14 @@ def create_app():
 
 
 def create_database():
+    # Використовуємо змінні середовища
     connection = mysql.connector.connect(
-        host='127.0.0.1',
-        user='root',
-        password='27102005',
+        host=os.getenv('DB_HOST', '127.0.0.1'),
+        user=os.getenv('DB_USER', 'root'),
+        password=os.getenv('DB_PASSWORD', 'your-password'),
     )
     cursor = connection.cursor()
-    cursor.execute("CREATE DATABASE IF NOT EXISTS skibytskyi2")
+    cursor.execute(f"CREATE DATABASE IF NOT EXISTS {os.getenv('DB_NAME', 'skibytskyi2')}")
     cursor.close()
     connection.close()
 
@@ -75,10 +82,10 @@ def populate_data():
     sql_file_path = os.path.abspath('data.sql')
     if os.path.exists(sql_file_path):
         connection = mysql.connector.connect(
-            host='127.0.0.1',
-            user='root',
-            password='27102005',
-            database='skibytskyi2'
+            host=os.getenv('DB_HOST', '127.0.0.1'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', 'your-password'),
+            database=os.getenv('DB_NAME', 'skibytskyi2')
         )
         cursor = connection.cursor()
         with open(sql_file_path, 'r') as sql_file:
@@ -102,10 +109,10 @@ def execute_sql_scripts(file_names):
     Виконує список SQL-скриптів, переданих у file_names.
     """
     connection = mysql.connector.connect(
-        host='127.0.0.1',
-        user='root',
-        password='27102005',
-        database='skibytskyi2'
+        host=os.getenv('DB_HOST', '127.0.0.1'),
+        user=os.getenv('DB_USER', 'root'),
+        password=os.getenv('DB_PASSWORD', 'your-password'),
+        database=os.getenv('DB_NAME', 'skibytskyi2')
     )
     cursor = connection.cursor()
 
@@ -134,10 +141,10 @@ def execute_triggers():
     sql_file_path = os.path.abspath('../db_scripts/triggers.sql')
     if os.path.exists(sql_file_path):
         connection = mysql.connector.connect(
-            host='127.0.0.1',
-            user='root',
-            password='27102005',
-            database='skibytskyi2'
+            host=os.getenv('DB_HOST', '127.0.0.1'),
+            user=os.getenv('DB_USER', 'root'),
+            password=os.getenv('DB_PASSWORD', 'your-password'),
+            database=os.getenv('DB_NAME', 'skibytskyi2')
         )
         cursor = connection.cursor()
         with open(sql_file_path, 'r') as sql_file:
